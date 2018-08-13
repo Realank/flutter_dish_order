@@ -123,6 +123,7 @@ class TypeListState extends State<TypeList> {
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           Container(
+            height: 60.0,
             color: index == widget.selectedIndex ? Colors.white : Colors.grey,
             child: FlatButton(
                 padding: EdgeInsets.zero,

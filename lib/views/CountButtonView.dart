@@ -56,19 +56,25 @@ class _CountButtonViewState extends State<CountButtonView> {
                     updateCount(-1);
                   },
                   child: Container(
-                      width: 44.0,
+                      width: 40.0,
                       child: Center(
                           child: Text(
                         '-',
                         style: TextStyle(
-                            fontSize: 25.0, fontWeight: FontWeight.bold, color: Colors.orange),
+                            fontSize: 25.0,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.orange,
+                            decoration: TextDecoration.none),
                       )))),
               Container(
                 child: Center(
                     child: Text(
                   '$count',
-                  style:
-                      TextStyle(fontSize: 22.0, fontWeight: FontWeight.bold, color: Colors.orange),
+                  style: TextStyle(
+                      fontSize: 20.0,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.orange,
+                      decoration: TextDecoration.none),
                 )),
               ),
               GestureDetector(
@@ -76,12 +82,15 @@ class _CountButtonViewState extends State<CountButtonView> {
                     updateCount(1);
                   },
                   child: Container(
-                      width: 44.0,
+                      width: 40.0,
                       child: Center(
                           child: Text(
                         '+',
                         style: TextStyle(
-                            fontSize: 25.0, fontWeight: FontWeight.bold, color: Colors.orange),
+                            fontSize: 25.0,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.orange,
+                            decoration: TextDecoration.none),
                       )))),
             ],
           ),
