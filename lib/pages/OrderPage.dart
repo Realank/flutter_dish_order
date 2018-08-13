@@ -24,12 +24,16 @@ class OrderPageContentState extends State<OrderPageContent> {
   final typeListController = ScrollController();
   final orderListController = ScrollController();
   int selectedIndex;
+  bool scrollingOrderList = false;
   @override
   void initState() {
     super.initState();
     selectedIndex = 0;
     orderListController.addListener(() {
       double offset = orderListController.offset;
+      if (scrollingOrderList) {
+        return;
+      }
       if (selectedIndex > 0 && offset < 260.0 * 3) {
         //菜单列表滚动，更新菜类选中，待定制tableview做好以后，需要优化
         setState(() {
@@ -62,10 +66,15 @@ class OrderPageContentState extends State<OrderPageContent> {
               controller: typeListController,
               selectedIndex: selectedIndex,
               indexSelected: (index) {
+                scrollingOrderList = true;
                 setState(() {
                   selectedIndex = index;
-                  orderListController.animateTo(index * 260.0 * 3,
-                      duration: Duration(milliseconds: 200), curve: Curves.easeInOut);
+                  orderListController
+                      .animateTo(index * 260.0 * 3,
+                          duration: Duration(milliseconds: 200), curve: Curves.easeInOut)
+                      .then((a) {
+                    scrollingOrderList = false;
+                  });
                 });
               },
             ),
