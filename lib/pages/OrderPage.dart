@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../business/DishesList.dart';
 
+typedef void IndexSelectCallBack(int index);
+
 class OrderPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -8,23 +10,148 @@ class OrderPage extends StatelessWidget {
       appBar: AppBar(
         title: Text('OrderPage'),
       ),
-      body: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          SizedBox(
-            width: 100.0,
-            child: Container(
-              color: Colors.blue,
-            ),
-          ),
-          Expanded(child: OrderList()),
-        ],
-      ),
+      body: OrderPageContent(),
     );
   }
 }
 
-class OrderList extends StatelessWidget {
+class OrderPageContent extends StatefulWidget {
+  @override
+  OrderPageContentState createState() => new OrderPageContentState();
+}
+
+class OrderPageContentState extends State<OrderPageContent> {
+  final typeListController = ScrollController();
+  final orderListController = ScrollController();
+  int selectedIndex;
+  @override
+  void initState() {
+    super.initState();
+    selectedIndex = 0;
+    orderListController.addListener(() {
+      double offset = orderListController.offset;
+      if (selectedIndex > 0 && offset < 260.0 * 3) {
+        //菜单列表滚动，更新菜类选中，待定制tableview做好以后，需要优化
+        setState(() {
+          selectedIndex = 0;
+        });
+      } else if (selectedIndex == 0 && offset >= 260.0 * 3) {
+        setState(() {
+          selectedIndex = 1;
+        });
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: <Widget>[
+        SizedBox(
+          width: 100.0,
+          child: Container(
+            color: Colors.blue,
+            child: TypeList(
+              controller: typeListController,
+              selectedIndex: selectedIndex,
+              indexSelected: (index) {
+                setState(() {
+                  selectedIndex = index;
+                  orderListController.animateTo(index * 260.0 * 3,
+                      duration: Duration(milliseconds: 200), curve: Curves.easeInOut);
+                });
+              },
+            ),
+          ),
+        ),
+        Expanded(
+            child: OrderList(
+          controller: orderListController,
+        )),
+      ],
+    );
+  }
+}
+
+class TypeList extends StatefulWidget {
+  TypeList({this.controller, this.indexSelected, this.selectedIndex = 0});
+  final controller;
+  final selectedIndex;
+  final IndexSelectCallBack indexSelected;
+  @override
+  TypeListState createState() => new TypeListState();
+}
+
+class TypeListState extends State<TypeList> {
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(itemBuilder: (context, index) {
+      String title = typeAtIndex(index);
+      if (title == null) {
+        return null;
+      }
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          Container(
+            color: index == widget.selectedIndex ? Colors.white : Colors.grey,
+            child: FlatButton(
+                padding: EdgeInsets.zero,
+                onPressed: () {
+                  widget.indexSelected(index);
+                },
+                child: Center(
+                  child: Text(title),
+                )),
+          ),
+          Container(
+            height: 1.0,
+            color: Colors.grey,
+          )
+        ],
+      );
+    });
+  }
+}
+
+class OrderList extends StatefulWidget {
+  OrderList({this.controller});
+  final controller;
+  @override
+  OrderListState createState() => new OrderListState();
+}
+
+class OrderListState extends State<OrderList> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+  }
+
   void cellSelected(BuildContext context, Dish dish) {
     print('selected ${dish.name}');
     showDialog(
@@ -61,8 +188,13 @@ class OrderList extends StatelessWidget {
       color: Colors.grey.shade100,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           _buildTitleRow(dish),
+          Container(
+            color: Colors.transparent,
+            height: 5.0,
+          ),
           Text(
             dish.desc,
             softWrap: true,
@@ -111,6 +243,7 @@ class OrderList extends StatelessWidget {
       color: Colors.grey.shade100,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           _buildTitleRow(dish),
           Text(
@@ -124,22 +257,29 @@ class OrderList extends StatelessWidget {
   }
 
   Widget _buildCell(BuildContext context, int index) {
-    if (index >= dishes.length) {
+    Dish dish = dishAtIndex(index);
+    if (dish == null) {
       return null;
     }
-    Dish dish = dishes[index];
     return Center(
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(10.0),
-        child: FlatButton(
-          onPressed: () {
-            cellSelected(context, dish);
-          },
+      child: FlatButton(
+        onPressed: () {
+          cellSelected(context, dish);
+        },
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(10.0),
           child: SizedBox(
             width: 250.0,
             height: 250.0,
             child: Column(
-              children: <Widget>[Expanded(child: _buildImage(dish)), _buildCellFooter(dish)],
+              children: <Widget>[
+                Container(
+                  width: 250.0,
+                  height: 160.0,
+                  child: _buildImage(dish),
+                ),
+                _buildCellFooter(dish)
+              ],
             ),
           ),
         ),
@@ -151,16 +291,18 @@ class OrderList extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       color: Colors.white,
-      child: ListView.builder(itemBuilder: (context, index) {
-        if (index % 2 == 0) {
-          return _buildCell(context, index ~/ 2);
-        } else {
-          return Container(
-            height: 10.0,
-            color: Colors.transparent,
-          );
-        }
-      }),
+      child: ListView.builder(
+          controller: this.widget.controller,
+          itemBuilder: (context, index) {
+            if (index % 2 == 0) {
+              return _buildCell(context, index ~/ 2);
+            } else {
+              return Container(
+                height: 10.0,
+                color: Colors.transparent,
+              );
+            }
+          }),
     );
   }
 }
