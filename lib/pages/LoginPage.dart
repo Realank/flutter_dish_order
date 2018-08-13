@@ -56,8 +56,8 @@ class _LoginInputState extends State<LoginInput> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 250.0,
-      width: 300.0,
+      height: 300.0,
+      width: 250.0,
       child: new Column(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,
@@ -77,7 +77,7 @@ class _LoginInputState extends State<LoginInput> {
               login(context, _nameController.text, _pswController.text);
             },
             child: new Text('登陆'),
-          ),
+          )
         ],
       ),
     );

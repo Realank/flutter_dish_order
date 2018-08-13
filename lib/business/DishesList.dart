@@ -82,3 +82,26 @@ String typeAtIndex(int index) {
   }
   return null;
 }
+
+Map<String, Map<String, dynamic>> orderedDishes = {};
+
+int orderedCountForDish(Dish dish) {
+  final result = orderedDishes[dish.name];
+  if (result == null) {
+    return 0;
+  }
+  final count = result['count'];
+  return count;
+}
+
+void orderDish(Dish dish, count) {
+  if (count < 0) {
+    return;
+  }
+  final result = orderedDishes[dish.name];
+  if (result == null) {
+    orderedDishes[dish.name] = {'count': 1, 'dish': dish};
+  } else {
+    result['count']++;
+  }
+}

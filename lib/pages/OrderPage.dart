@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../business/DishesList.dart';
+import '../views/CountButtonView.dart';
 
 typedef void IndexSelectCallBack(int index);
 
@@ -49,7 +50,8 @@ class OrderPageContentState extends State<OrderPageContent> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
+    typeListController.dispose();
+    orderListController.dispose();
     super.dispose();
   }
 
@@ -219,9 +221,24 @@ class OrderListState extends State<OrderList> {
   }
 
   Widget _buildImage(Dish dish) {
-    return Image.network(
-      dish.imgUrl,
-      fit: BoxFit.cover,
+    return Stack(
+      fit: StackFit.expand,
+//      alignment: Alignment.center,
+      children: <Widget>[
+        Image.network(
+          dish.imgUrl,
+          fit: BoxFit.cover,
+        ),
+        Positioned(
+            right: 8.0,
+            bottom: 8.0,
+            child: CountButtonView(
+              initialCount: orderedCountForDish(dish),
+              onChange: (count) {
+                orderDish(dish, count);
+              },
+            )),
+      ],
     );
   }
 
