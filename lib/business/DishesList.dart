@@ -62,25 +62,12 @@ final Map<String, List<Dish>> _dishes = {
   ],
 };
 
-Dish dishAtIndex(int index) {
-  int keyNum = _dishes.keys.length;
-  int totalNum = 0;
-  for (int i = 0; i < keyNum; i++) {
-    String key = _dishes.keys.toList()[i];
-    List dishesInCurrentKey = _dishes[key];
-    if (index >= totalNum && index < totalNum + dishesInCurrentKey.length) {
-      return dishesInCurrentKey[index - totalNum];
-    }
-    totalNum += dishesInCurrentKey.length;
-  }
-  return null;
+List<String> dishTypesList() {
+  return _dishes.keys.toList();
 }
 
-String typeAtIndex(int index) {
-  if (index < _dishes.keys.length) {
-    return _dishes.keys.toList()[index];
-  }
-  return null;
+List<Dish> dishesInType(String type) {
+  return _dishes[type];
 }
 
 Map<String, Map<String, dynamic>> orderedDishes = {};

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../business/DishesList.dart';
 import '../views/CountButtonView.dart';
+import 'package:flutter_section_table_view/flutter_section_table_view.dart';
 
 typedef void IndexSelectCallBack(int index);
 
@@ -114,11 +115,13 @@ class TypeListState extends State<TypeList> {
 
   @override
   Widget build(BuildContext context) {
+    var types = dishTypesList();
     return ListView.builder(itemBuilder: (context, index) {
-      String title = typeAtIndex(index);
-      if (title == null) {
+      if (index >= types.length) {
         return null;
       }
+      String title = types[index];
+
       return Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
@@ -283,11 +286,7 @@ class OrderListState extends State<OrderList> {
     );
   }
 
-  Widget _buildCell(BuildContext context, int index) {
-    Dish dish = dishAtIndex(index);
-    if (dish == null) {
-      return null;
-    }
+  Widget _buildCell(BuildContext context, Dish dish) {
     return Center(
       child: FlatButton(
         onPressed: () {
@@ -318,18 +317,28 @@ class OrderListState extends State<OrderList> {
   Widget build(BuildContext context) {
     return Container(
       color: Colors.white,
-      child: ListView.builder(
-          controller: this.widget.controller,
-          itemBuilder: (context, index) {
-            if (index % 2 == 0) {
-              return _buildCell(context, index ~/ 2);
-            } else {
-              return Container(
-                height: 10.0,
-                color: Colors.transparent,
-              );
-            }
-          }),
+      child: SectionTableView(
+        sectionCount: dishTypesList().length,
+        numOfRowInSection: (section) {
+          return dishesInType(dishTypesList()[section]).length;
+        },
+        cellAtIndexPath: (section, row) {
+          return _buildCell(context, dishesInType(dishTypesList()[section])[row]);
+        },
+        divider: Container(
+          height: 3.0,
+          color: Colors.transparent,
+        ),
+        headerInSection: (section) {
+          return Container(
+            color: Colors.grey,
+            height: 30.0,
+            child: Center(
+              child: Text(dishTypesList()[section]),
+            ),
+          );
+        },
+      ),
     );
   }
 }
