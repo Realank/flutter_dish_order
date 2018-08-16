@@ -23,36 +23,23 @@ class OrderPageContent extends StatefulWidget {
 }
 
 class OrderPageContentState extends State<OrderPageContent> {
-  final typeListController = ScrollController();
-  final orderListController = ScrollController();
+  final sectionTableController = SectionTableController();
+
   int selectedIndex;
   bool scrollingOrderList = false;
   @override
   void initState() {
     super.initState();
     selectedIndex = 0;
-    orderListController.addListener(() {
-      double offset = orderListController.offset;
-      if (scrollingOrderList) {
-        return;
-      }
-      if (selectedIndex > 0 && offset < 260.0 * 3) {
-        //菜单列表滚动，更新菜类选中，待定制tableview做好以后，需要优化
-        setState(() {
-          selectedIndex = 0;
-        });
-      } else if (selectedIndex == 0 && offset >= 260.0 * 3) {
-        setState(() {
-          selectedIndex = 1;
-        });
-      }
-    });
+    sectionTableController.sectionTableViewScrollTo = (section, row, scrollDown) {
+      setState(() {
+        selectedIndex = section;
+      });
+    };
   }
 
   @override
   void dispose() {
-    typeListController.dispose();
-    orderListController.dispose();
     super.dispose();
   }
 
@@ -66,16 +53,12 @@ class OrderPageContentState extends State<OrderPageContent> {
           child: Container(
             color: Colors.blue,
             child: TypeList(
-              controller: typeListController,
               selectedIndex: selectedIndex,
               indexSelected: (index) {
                 scrollingOrderList = true;
                 setState(() {
                   selectedIndex = index;
-                  orderListController
-                      .animateTo(index * 260.0 * 3,
-                          duration: Duration(milliseconds: 200), curve: Curves.easeInOut)
-                      .then((a) {
+                  sectionTableController.animateTo(index, -1).then((finish) {
                     scrollingOrderList = false;
                   });
                 });
@@ -85,7 +68,7 @@ class OrderPageContentState extends State<OrderPageContent> {
         ),
         Expanded(
             child: OrderList(
-          controller: orderListController,
+          controller: sectionTableController,
         )),
       ],
     );
@@ -338,6 +321,10 @@ class OrderListState extends State<OrderList> {
             ),
           );
         },
+        dividerHeight: () => 3.0,
+        sectionHeaderHeight: (section) => 30.0,
+        cellHeightAtIndexPath: (section, row) => 250.0,
+        controller: widget.controller,
       ),
     );
   }
