@@ -32,9 +32,12 @@ class OrderPageContentState extends State<OrderPageContent> {
     super.initState();
     selectedIndex = 0;
     sectionTableController.sectionTableViewScrollTo = (section, row, scrollDown) {
-      setState(() {
-        selectedIndex = section;
-      });
+      if (scrollingOrderList == false) {
+        print('scroll to index');
+        setState(() {
+          selectedIndex = section;
+        });
+      }
     };
   }
 
@@ -49,6 +52,7 @@ class OrderPageContentState extends State<OrderPageContent> {
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
         SizedBox(
+          //left menu type
           width: 100.0,
           child: Container(
             color: Colors.blue,
@@ -67,6 +71,7 @@ class OrderPageContentState extends State<OrderPageContent> {
           ),
         ),
         Expanded(
+            //right dishes list
             child: OrderList(
           controller: sectionTableController,
         )),
@@ -238,7 +243,7 @@ class OrderListState extends State<OrderList> {
           style: TextStyle(color: Colors.black, fontSize: 19.0, decoration: TextDecoration.none),
         ),
         Text(
-          '¥${dish.price } / ${dish.unit}',
+          '¥${dish.price} / ${dish.unit}',
           style: TextStyle(
               color: Colors.red,
               fontWeight: FontWeight.w800,
