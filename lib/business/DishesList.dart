@@ -18,7 +18,8 @@ final Map<String, List<Dish>> _dishes = {
         desc:
             '川菜中的保留家常菜，由鸡丁、干辣椒、花生米等炒制而成。由于其入口鲜辣，鸡肉的鲜嫩配合花生的香脆，深受大众喜欢。川菜中的保留家常菜，由鸡丁、干辣椒、花生米等炒制而成。由于其入口鲜辣，鸡肉的鲜嫩配合花生的香脆，深受大众喜欢。川菜中的保留家常菜，由鸡丁、干辣椒、花生米等炒制而成。由于其入口鲜辣，鸡肉的鲜嫩配合花生的香脆，深受大众喜欢。'),
     Dish(
-        imgUrl: 'http://images.meishij.net/p/20111202/13c8d3aede342b8e02d0dbf1bb389519.jpg',
+        imgUrl:
+            'http://images.meishij.net/p/20111202/13c8d3aede342b8e02d0dbf1bb389519.jpg',
         name: '番茄牛腩',
         price: 35.6,
         unit: '碗',

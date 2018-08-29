@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import '../business/DishesList.dart';
 import '../views/CountButtonView.dart';
 import 'package:flutter_section_table_view/flutter_section_table_view.dart';
+import '../resources/theme.dart';
+import 'dart:async';
 
 typedef void IndexSelectCallBack(int index);
 
@@ -158,30 +160,26 @@ class OrderListState extends State<OrderList> {
   void cellSelected(BuildContext context, Dish dish) {
     print('selected ${dish.name}');
     showDialog(
-        context: context,
-        builder: (context) {
-          return Theme(
-            data: Theme.of(context),
-            child: Center(
-                child: ClipRRect(
-              borderRadius: BorderRadius.circular(10.0),
-              child: Container(
-                  color: Colors.grey.shade100,
-                  width: 300.0,
-                  height: 350.0,
-                  child: SingleChildScrollView(
-                    child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-                      Container(
-                        width: 300.0,
-                        height: 200.0,
-                        child: _buildImage(dish),
-                      ),
-                      _buildPopupFooter(dish)
-                    ]),
-                  )),
-            )),
-          );
-        });
+      context: context,
+      builder: (_) => Center(
+              child: ClipRRect(
+            borderRadius: BorderRadius.circular(10.0),
+            child: Container(
+                color: Colors.grey.shade100,
+                width: 300.0,
+                height: 350.0,
+                child: SingleChildScrollView(
+                  child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
+                    Container(
+                      width: 300.0,
+                      height: 200.0,
+                      child: _buildImage(dish),
+                    ),
+                    _buildPopupFooter(dish)
+                  ]),
+                )),
+          )),
+    );
   }
 
   Widget _buildPopupFooter(Dish dish) {
@@ -198,15 +196,12 @@ class OrderListState extends State<OrderList> {
             color: Colors.transparent,
             height: 5.0,
           ),
-          Text(
-            dish.desc,
-            softWrap: true,
-            style: TextStyle(
-                color: Colors.black,
-                fontWeight: FontWeight.normal,
-                fontSize: 15.0,
-                decoration: TextDecoration.none),
-          ),
+          Text(dish.desc,
+              softWrap: true,
+              style: Theme.of(context)
+                  .textTheme
+                  .body1
+                  .copyWith(color: Colors.black, fontWeight: FontWeight.normal, fontSize: 15.0)),
         ],
       ),
     );
@@ -240,16 +235,13 @@ class OrderListState extends State<OrderList> {
       children: <Widget>[
         Text(
           dish.name,
-          style: TextStyle(color: Colors.black, fontSize: 19.0, decoration: TextDecoration.none),
+          style: Theme.of(context).textTheme.body1.copyWith(color: Colors.black, fontSize: 19.0),
         ),
-        Text(
-          '¥${dish.price} / ${dish.unit}',
-          style: TextStyle(
-              color: Colors.red,
-              fontWeight: FontWeight.w800,
-              fontSize: 19.0,
-              decoration: TextDecoration.none),
-        )
+        Text('¥${dish.price} / ${dish.unit}',
+            style: Theme.of(context)
+                .textTheme
+                .body1
+                .copyWith(color: Colors.red, fontWeight: FontWeight.w800, fontSize: 19.0))
       ],
     );
   }
@@ -268,6 +260,10 @@ class OrderListState extends State<OrderList> {
             dish.desc,
             maxLines: 2,
             softWrap: true,
+//              style: Theme.of(context)
+//                  .textTheme
+//                  .body1
+//                  .copyWith(color: Colors.black, fontWeight: FontWeight.normal, fontSize: 15.0)
           ),
         ],
       ),

@@ -40,7 +40,8 @@ class _LoginInputState extends State<LoginInput> {
     super.dispose();
   }
 
-  Widget textFieldWithController(TextEditingController controller, String placeholder) {
+  Widget textFieldWithController(
+      TextEditingController controller, String placeholder) {
     return TextField(
         style: TextStyle(fontSize: 19.0, color: Colors.black),
         controller: controller,
@@ -85,5 +86,6 @@ class _LoginInputState extends State<LoginInput> {
 }
 
 void login(BuildContext context, String name, String password) {
-  Navigator.of(context).push(MaterialPageRoute(builder: (context) => OrderPage()));
+  Navigator.of(context)
+      .push(MaterialPageRoute(builder: (context) => OrderPage()));
 }
